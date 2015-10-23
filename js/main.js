@@ -12,15 +12,9 @@
 	// Del objeto creado solo obtengo la hora y la asigno a la variable horaActual
 	var horaActual = hoy.toLocaleTimeString();
 
+	// Asigno valores de posición en local storage; de existir éstos
 	var latSaved = localStorage.lat;
 	var lonSaved = localStorage.lon;
-
-	if (undefined != latSaved) {
-		console.log("Si hay datos en local storage");
-		console.log( "valor de lat: " + latSaved + " valor de log: " + lonSaved);	
-	} else {
-		console.log("No hay datos en local storage");
-	}
 	
 	// Creamos el objeto donde recibiremos los datos de clima del API por ciudad y acontinuación definimos algunas propiedades
 	var cityWeather = {};
@@ -35,11 +29,20 @@
 
 	// Si el navegador cuenta con el método geolocation 
 	if (navigator.geolocation) 
-	{
-		/* Obtengo las coordenadas que me proporciona el navegador; 
+	{		
+		// Si la variable de locla storage latSaved si está definida se usarán las coordenadas yaguardadas
+		if (latSaved != undefined) {
+			// Consumo directo el API del clima con los valores almacenados en local storage
+			$.getJSON(API_WEATHER_URL + "lat=" + latSaved + "&lon=" + lonSaved, getCurrenWeather);
+			console.log("Si hay datos en local storage");
+			console.log( "valor de lat: " + latSaved + " valor de log: " + lonSaved);	
+		// Si no hay datos guardados en local storage entonces se pregunta por la ubicación
+		} else {
+			/* Obtengo las coordenadas que me proporciona el navegador; 
 			El primer parámetro es la función que correrá en caso de ser correcta .
 			El segundo parámetro es ka función de lo que hará si ocurre un error. */
-		navigator.geolocation.getCurrentPosition(obtenCoords, errorEncontrado);
+			navigator.geolocation.getCurrentPosition(obtenCoords, errorEncontrado);
+		}
 	} 
 	// Si el navegador es muy viejo y no soporta el método geolocation
 	else 
@@ -59,6 +62,7 @@
 		var lat = posision.coords.latitude;
 		var lon = posision.coords.longitude;
 		
+		// Guardo ésta información en local storage para no tener que pedir permiso de geolocalización
 		localStorage.setItem("lat", lat);
 		localStorage.setItem("lon", lon);
 
