@@ -12,6 +12,16 @@
 	// Del objeto creado solo obtengo la hora y la asigno a la variable horaActual
 	var horaActual = hoy.toLocaleTimeString();
 
+	var latSaved = localStorage.lat;
+	var lonSaved = localStorage.lon;
+
+	if (undefined != latSaved) {
+		console.log("Si hay datos en local storage");
+		console.log( "valor de lat: " + latSaved + " valor de log: " + lonSaved);	
+	} else {
+		console.log("No hay datos en local storage");
+	}
+	
 	// Creamos el objeto donde recibiremos los datos de clima del API por ciudad y acontinuación definimos algunas propiedades
 	var cityWeather = {};
 	// La zona en la que estamos
@@ -44,9 +54,14 @@
 	}
 	// Función que corre si "getCurrentPosition" regresa los valores esperados
 	function obtenCoords(posision) {
+	
 		// Asigno valores de latitud y longitud a las variables lat y long
 		var lat = posision.coords.latitude;
 		var lon = posision.coords.longitude;
+		
+		localStorage.setItem("lat", lat);
+		localStorage.setItem("lon", lon);
+
 		// Imprimo las cordenadas en consola, para mostrar los valores que regresa (ésto se puede comentar)
 		console.log("Tu posición es: " + lat + "," + lon);
 		/* Corro un AJAX usando jquery con un get simple para traer la información del API del clima
